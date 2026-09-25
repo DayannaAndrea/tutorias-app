@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout.jsx'
+import { signIn } from '../services/auth.js'
 
 function Login() {
+  const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -16,35 +18,30 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    if (!form.email.trim() || !form.password) {
+    if (!form.email.trim() || !form.password.trim()) {
       setError('Completa tu correo y contraseña para continuar.')
       return
     }
 
-    setError('')
-    setLoading(true)
-
-    window.setTimeout(() => {
-      setLoading(false)
-      console.log('Login', form)
-    }, 650)
+    signIn()
+    navigate('/tutores', { replace: true })
   }
 
   return (
     <AuthLayout
       title="Inicia tu sesión"
-      subtitle="Ingresa con tu correo institucional para continuar con tus tutorías."
+      subtitle="Ingresa con tus datos para continuar con tus tutorías."
       login
       register={false}
     >
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
         <div className="field-group">
-          <label htmlFor="email">Correo institucional</label>
+          <label htmlFor="email">Correo electrónico</label>
           <div className="input-shell">
             <input
               id="email"
               name="email"
-              type="email"
+              type="text"
               placeholder="nombre@universidad.edu.co"
               value={form.email}
               onChange={handleChange}
@@ -82,8 +79,8 @@ function Login() {
 
         {error && <p className="form-error" role="alert">{error}</p>}
 
-        <button className="primary-button" type="submit" disabled={loading}>
-          <span>{loading ? 'Validando acceso' : 'Iniciar sesión'}</span>
+        <button className="primary-button" type="submit">
+          <span>Ingresar</span>
           <span className="button-arrow" aria-hidden="true">→</span>
         </button>
       </form>

@@ -52,7 +52,7 @@ function AuthLayout({ title, subtitle, children, register, login }) {
           </div>
 
           <div className="intro-footer">
-            <span>Acceso seguro</span>
+            <span>Acceso temporal</span>
             <span className="footer-separator" aria-hidden="true" />
             <span>Experiencia centrada en el estudiante</span>
           </div>
@@ -94,7 +94,7 @@ function AuthLayout({ title, subtitle, children, register, login }) {
 
             <div className="auth-trust">
               <span className="trust-lock" aria-hidden="true" />
-              Tus datos se gestionan dentro de la plataforma académica.
+              La autenticación real se conectará al backend cuando esté disponible.
             </div>
 
             <div className="auth-switch">

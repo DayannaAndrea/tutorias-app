@@ -1,18 +1,19 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout.jsx'
+import { signIn } from '../services/auth.js'
 
 function getStrength(password) {
   let score = 0
-
   if (password.length >= 8) score += 1
   if (/[A-Z]/.test(password)) score += 1
   if (/[0-9]/.test(password)) score += 1
   if (/[^A-Za-z0-9]/.test(password)) score += 1
-
   return score
 }
 
 function Register() {
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -22,7 +23,6 @@ function Register() {
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
 
   const passwordScore = useMemo(() => getStrength(form.password), [form.password])
 
@@ -35,13 +35,8 @@ function Register() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    if (!form.name.trim() || !form.email.trim() || !form.password || !form.confirmPassword) {
-      setError('Completa todos los campos para crear tu cuenta.')
-      return
-    }
-
-    if (form.password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres.')
+    if (!form.name.trim() || !form.email.trim() || !form.password.trim() || !form.confirmPassword.trim()) {
+      setError('Completa todos los campos para continuar.')
       return
     }
 
@@ -50,19 +45,14 @@ function Register() {
       return
     }
 
-    setError('')
-    setLoading(true)
-
-    window.setTimeout(() => {
-      setLoading(false)
-      console.log('Registro', form)
-    }, 650)
+    signIn()
+    navigate('/tutores', { replace: true })
   }
 
   return (
     <AuthLayout
       title="Crea tu cuenta"
-      subtitle="Regístrate para acceder al acompañamiento y gestionar tus solicitudes."
+      subtitle="Completa tus datos para continuar con el acceso a Tutorías."
       login={false}
       register
     >
@@ -84,12 +74,12 @@ function Register() {
         </div>
 
         <div className="field-group">
-          <label htmlFor="register-email">Correo institucional</label>
+          <label htmlFor="register-email">Correo electrónico</label>
           <div className="input-shell">
             <input
               id="register-email"
               name="email"
-              type="email"
+              type="text"
               placeholder="nombre@universidad.edu.co"
               value={form.email}
               onChange={handleChange}
@@ -107,7 +97,7 @@ function Register() {
                 id="register-password"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Mínimo 8 caracteres"
+                placeholder="Cualquier contraseña"
                 value={form.password}
                 onChange={handleChange}
                 autoComplete="new-password"
@@ -154,8 +144,8 @@ function Register() {
 
         {error && <p className="form-error" role="alert">{error}</p>}
 
-        <button className="primary-button" type="submit" disabled={loading}>
-          <span>{loading ? 'Preparando cuenta' : 'Crear cuenta'}</span>
+        <button className="primary-button" type="submit">
+          <span>Continuar</span>
           <span className="button-arrow" aria-hidden="true">→</span>
         </button>
       </form>
