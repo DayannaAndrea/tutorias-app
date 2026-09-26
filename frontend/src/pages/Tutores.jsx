@@ -84,6 +84,7 @@ function Icon({ name, size = 18 }) {
     arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
     grid: <><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></>,
     logout: <><path d="M10 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20H10" /><path d="M14 8l4 4-4 4" /><path d="M18 12H9" /></>,
+    calendar: <><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M8 3v4M16 3v4M4 9h16" /></>,
   }
 
   return (
@@ -286,10 +287,15 @@ function Tutores() {
                   </div>
                 </div>
 
-                <div className="tutor-card-footer">
-                  <span>Disponible para solicitud</span>
+                <button
+                  className="tutor-card-footer tutor-card-action"
+                  type="button"
+                  onClick={() => navigate('/solicitar-tutoria', { state: { tutor } })}
+                  aria-label={`Solicitar tutoría con ${name}`}
+                >
+                  <span className="tutor-cta-label"><Icon name="calendar" size={14} /> Solicitar tutoría</span>
                   <span className="footer-arrow"><Icon name="arrow" size={16} /></span>
-                </div>
+                </button>
               </article>
             )
           })}
@@ -310,8 +316,8 @@ function Tutores() {
             <span className="footer-mark">T</span>
             <span>Tutorías</span>
           </div>
-          <span>APP-02 · Lista de tutores</span>
-          <span>Frontend · React</span>
+          <span className="footer-center-copy">Encuentra apoyo para tus materias</span>
+          <span>Espacio académico</span>
         </footer>
       </section>
     </main>

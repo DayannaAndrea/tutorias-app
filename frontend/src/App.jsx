@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Tutores from './pages/Tutores.jsx'
+import SolicitarTutoria from './pages/SolicitarTutoria.jsx'
 import { isAuthenticated } from './services/auth.js'
 import './App.css'
 
@@ -20,6 +21,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Tutores />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/solicitar-tutoria"
+        element={
+          <ProtectedRoute>
+            <SolicitarTutoria />
           </ProtectedRoute>
         }
       />

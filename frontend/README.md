@@ -1,6 +1,6 @@
-# Tutorías - APP-02
+# Tutorías · Frontend
 
-Frontend del APP-02 construido sobre el APP-01.
+Frontend de la plataforma de tutorías académicas.
 
 ## Acceso temporal de desarrollo
 
@@ -10,7 +10,7 @@ No se crean cuentas de prueba ni credenciales especiales. Solo se guarda una mar
 
 Cuando se conecte el backend, este comportamiento deberá reemplazarse por la autenticación real del proyecto.
 
-## APP-02
+## Lista de tutores
 
 - Lista de tutores
 - Filtro por materia
