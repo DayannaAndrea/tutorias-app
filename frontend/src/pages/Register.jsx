@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout.jsx'
-import { signIn } from '../services/auth.js'
+import { saveAccount, signIn, getHomePath } from '../services/auth.js'
 
 function getStrength(password) {
   let score = 0
@@ -19,6 +19,8 @@ function Register() {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'estudiante',
+    subjects: '',
   })
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -29,6 +31,11 @@ function Register() {
   const handleChange = (event) => {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
+    setError('')
+  }
+
+  const handleRoleChange = (role) => {
+    setForm((current) => ({ ...current, role }))
     setError('')
   }
 
@@ -45,18 +52,52 @@ function Register() {
       return
     }
 
-    signIn()
-    navigate('/tutores', { replace: true })
+    const account = saveAccount(form)
+    signIn(account)
+    navigate(getHomePath(), { replace: true })
   }
 
   return (
     <AuthLayout
       title="Crea tu cuenta"
-      subtitle="Completa tus datos para continuar con el acceso a Tutorías."
+      subtitle="Elige cómo participarás en la plataforma y completa tus datos."
       login={false}
       register
     >
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        <div className="field-group">
+          <label>Tipo de cuenta</label>
+          <div className="role-choice-grid" role="radiogroup" aria-label="Selecciona el tipo de cuenta">
+            <button
+              type="button"
+              className={`role-choice ${form.role === 'estudiante' ? 'role-choice-active' : ''}`}
+              onClick={() => handleRoleChange('estudiante')}
+              role="radio"
+              aria-checked={form.role === 'estudiante'}
+            >
+              <span className="role-choice-icon">E</span>
+              <span className="role-choice-copy">
+                <strong>Estudiante</strong>
+                <small>Buscar tutores y solicitar tutorías</small>
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={`role-choice ${form.role === 'tutor' ? 'role-choice-active' : ''}`}
+              onClick={() => handleRoleChange('tutor')}
+              role="radio"
+              aria-checked={form.role === 'tutor'}
+            >
+              <span className="role-choice-icon">T</span>
+              <span className="role-choice-copy">
+                <strong>Tutor</strong>
+                <small>Recibir y gestionar solicitudes</small>
+              </span>
+            </button>
+          </div>
+        </div>
+
         <div className="field-group">
           <label htmlFor="name">Nombre completo</label>
           <div className="input-shell">
@@ -72,6 +113,26 @@ function Register() {
             <span className="input-detail initials" aria-hidden="true">NM</span>
           </div>
         </div>
+
+        {form.role === 'tutor' && (
+          <div className="field-group">
+            <label htmlFor="subjects">Materias que enseñas</label>
+            <div className="input-shell">
+              <input
+                id="subjects"
+                name="subjects"
+                type="text"
+                placeholder="Ej. Programación, Bases de Datos"
+                value={form.subjects}
+                onChange={handleChange}
+                autoComplete="off"
+              />
+              <span className="input-detail" aria-hidden="true">+
+              </span>
+            </div>
+            <small className="field-help">Separa varias materias con comas.</small>
+          </div>
+        )}
 
         <div className="field-group">
           <label htmlFor="register-email">Correo electrónico</label>
@@ -145,7 +206,7 @@ function Register() {
         {error && <p className="form-error" role="alert">{error}</p>}
 
         <button className="primary-button" type="submit">
-          <span>Continuar</span>
+          <span>Crear cuenta</span>
           <span className="button-arrow" aria-hidden="true">→</span>
         </button>
       </form>

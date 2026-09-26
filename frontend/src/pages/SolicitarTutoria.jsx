@@ -1,14 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { getCurrentUser } from '../services/auth.js'
+import { addRequest } from '../services/solicitudesService.js'
 
-const LOCAL_TUTORES = [
-  { id: 'local-1', usuario: { first_name: 'María', last_name: 'Gómez' }, materias: ['Matemáticas', 'Cálculo'] },
-  { id: 'local-2', usuario: { first_name: 'Carlos', last_name: 'Martínez' }, materias: ['Programación', 'Bases de Datos'] },
-  { id: 'local-3', usuario: { first_name: 'Laura', last_name: 'Rodríguez' }, materias: ['Estadística', 'Matemáticas'] },
-  { id: 'local-4', usuario: { first_name: 'Andrés', last_name: 'Castro' }, materias: ['Programación', 'Ingeniería de Software'] },
-  { id: 'local-5', usuario: { first_name: 'Valentina', last_name: 'Rojas' }, materias: ['Física', 'Cálculo'] },
-  { id: 'local-6', usuario: { first_name: 'Santiago', last_name: 'López' }, materias: ['Bases de Datos', 'Estadística'] },
-]
+import { getLocalTutores } from '../services/tutoresLocal.js'
+
 
 function getTutorName(tutor) {
   const user = tutor?.usuario || tutor?.user || {}
@@ -54,28 +50,44 @@ function getTodayString() {
 function SolicitarTutoria() {
   const navigate = useNavigate()
   const location = useLocation()
-  const initialTutor = location.state?.tutor || LOCAL_TUTORES[0]
-  const [tutorId, setTutorId] = useState(initialTutor?.id || LOCAL_TUTORES[0].id)
+  const tutores = useMemo(() => getLocalTutores(), [])
+  const initialTutor = location.state?.tutor || tutores[0]
+  const [tutorId, setTutorId] = useState(initialTutor?.id || tutores[0]?.id || '')
   const [materia, setMateria] = useState(getSubjects(initialTutor)[0] || '')
   const [fecha, setFecha] = useState('')
   const [hora, setHora] = useState('')
   const [nota, setNota] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const currentUser = getCurrentUser()
 
-  const tutor = useMemo(() => LOCAL_TUTORES.find((item) => item.id === tutorId) || initialTutor, [tutorId, initialTutor])
-  const subjects = getSubjects(tutor)
+  const tutor = useMemo(() => tutores.find((item) => item.id === tutorId) || initialTutor, [tutorId, initialTutor, tutores])
+  const tutorSubjects = getSubjects(tutor)
+  const subjects = tutorSubjects.length ? tutorSubjects : ['Tutoría general']
   const tutorName = getTutorName(tutor)
 
   const handleTutorChange = (event) => {
-    const nextTutor = LOCAL_TUTORES.find((item) => item.id === event.target.value)
+    const nextTutor = tutores.find((item) => item.id === event.target.value)
     setTutorId(event.target.value)
-    setMateria(getSubjects(nextTutor)[0] || '')
+    const nextSubjects = getSubjects(nextTutor)
+    setMateria(nextSubjects[0] || 'Tutoría general')
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
     setSubmitted(true)
-    sessionStorage.setItem('solicitud_tutoria', JSON.stringify({ tutorId, tutor: tutorName, materia, fecha, hora, nota, estado: 'Pendiente' }))
+    const request = addRequest({
+      id: Date.now(),
+      estudiante: currentUser?.name || 'Estudiante',
+      tutorId,
+      tutor: tutorName,
+      estudianteEmail: currentUser?.email || '',
+      materia,
+      fecha,
+      hora,
+      nota,
+    })
+
+    sessionStorage.setItem('solicitud_tutoria', JSON.stringify(request))
   }
 
   if (submitted) {
@@ -129,9 +141,15 @@ function SolicitarTutoria() {
           <span className="request-brand-mark">T</span>
           <span><strong>Tutorías</strong><small>Acompañamiento académico</small></span>
         </button>
-        <button className="request-back-link" type="button" onClick={() => navigate('/tutores')}>
-          <Icon name="back" size={15} /> Volver a tutores
-        </button>
+        <div className="request-header-links">
+          <span className="student-role-chip">
+            <span className="student-role-dot" />
+            Estudiante
+          </span>
+          <button className="request-back-link" type="button" onClick={() => navigate('/tutores')}>
+            <Icon name="back" size={15} /> Volver a tutores
+          </button>
+        </div>
       </header>
 
       <section className="request-shell">
@@ -167,7 +185,7 @@ function SolicitarTutoria() {
                 <label htmlFor="tutor"><Icon name="user" size={15} /> Tutor</label>
                 <div className="request-control">
                   <select id="tutor" value={tutorId} onChange={handleTutorChange} required>
-                    {LOCAL_TUTORES.map((item) => <option key={item.id} value={item.id}>{getTutorName(item)}</option>)}
+                    {tutores.map((item) => <option key={item.id} value={item.id}>{getTutorName(item)}</option>)}
                   </select>
                 </div>
                 <small>Selecciona el tutor con el que deseas solicitar la sesión.</small>
