@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout.jsx'
-import { signIn } from '../services/auth.js'
+import { getAccountByEmail, getHomePath, signIn } from '../services/auth.js'
 
 function Login() {
   const navigate = useNavigate()
@@ -23,8 +23,14 @@ function Login() {
       return
     }
 
-    signIn()
-    navigate('/tutores', { replace: true })
+    const account = getAccountByEmail(form.email)
+    signIn({
+      name: account?.name,
+      email: form.email,
+      role: account?.role,
+    })
+
+    navigate(getHomePath(), { replace: true })
   }
 
   return (

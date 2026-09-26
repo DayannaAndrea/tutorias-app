@@ -1,45 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signOut } from '../services/auth.js'
+import { getCurrentUser, signOut } from '../services/auth.js'
 
-const LOCAL_TUTORES = [
-  {
-    id: 'local-1',
-    usuario: { first_name: 'María', last_name: 'Gómez' },
-    materias: ['Matemáticas', 'Cálculo'],
-    disponibilidad: 'Disponible',
-  },
-  {
-    id: 'local-2',
-    usuario: { first_name: 'Carlos', last_name: 'Martínez' },
-    materias: ['Programación', 'Bases de Datos'],
-    disponibilidad: 'Disponible',
-  },
-  {
-    id: 'local-3',
-    usuario: { first_name: 'Laura', last_name: 'Rodríguez' },
-    materias: ['Estadística', 'Matemáticas'],
-    disponibilidad: 'Disponible',
-  },
-  {
-    id: 'local-4',
-    usuario: { first_name: 'Andrés', last_name: 'Castro' },
-    materias: ['Programación', 'Ingeniería de Software'],
-    disponibilidad: 'Disponible',
-  },
-  {
-    id: 'local-5',
-    usuario: { first_name: 'Valentina', last_name: 'Rojas' },
-    materias: ['Física', 'Cálculo'],
-    disponibilidad: 'Disponible',
-  },
-  {
-    id: 'local-6',
-    usuario: { first_name: 'Santiago', last_name: 'López' },
-    materias: ['Bases de Datos', 'Estadística'],
-    disponibilidad: 'Disponible',
-  },
-]
+import { getLocalTutores } from '../services/tutoresLocal.js'
+
 
 function getTutorName(tutor) {
   const user = tutor?.usuario || tutor?.user || {}
@@ -98,24 +62,26 @@ function Tutores() {
   const navigate = useNavigate()
   const [materia, setMateria] = useState('')
   const [search, setSearch] = useState('')
+  const currentUser = getCurrentUser()
+  const localTutores = useMemo(() => getLocalTutores(), [])
 
   const subjects = useMemo(() => {
     const unique = new Set()
-    LOCAL_TUTORES.forEach((tutor) => getTutorSubjects(tutor).forEach((subject) => unique.add(subject)))
+    localTutores.forEach((tutor) => getTutorSubjects(tutor).forEach((subject) => unique.add(subject)))
     return Array.from(unique).sort((a, b) => a.localeCompare(b, 'es'))
-  }, [])
+  }, [localTutores])
 
   const filteredTutores = useMemo(() => {
     const query = search.trim().toLowerCase()
 
-    return LOCAL_TUTORES.filter((tutor) => {
+    return localTutores.filter((tutor) => {
       const name = getTutorName(tutor).toLowerCase()
       const tutorSubjects = getTutorSubjects(tutor)
       const matchesMateria = !materia || tutorSubjects.includes(materia)
       const matchesSearch = !query || `${name} ${tutorSubjects.join(' ')}`.toLowerCase().includes(query)
       return matchesMateria && matchesSearch
     })
-  }, [materia, search])
+  }, [localTutores, materia, search])
 
   const visibleSubjects = useMemo(() => {
     const unique = new Set()
@@ -149,10 +115,15 @@ function Tutores() {
         </button>
 
         <div className="tutors-header-actions">
+          <span className="student-role-chip">
+            <span className="student-role-dot" />
+            Estudiante
+          </span>
           <span className="academic-chip">
             <span className="academic-chip-dot" />
             Espacio académico
           </span>
+          {currentUser?.name && <span className="header-user-name">{currentUser.name}</span>}
           <button className="header-logout-button" type="button" onClick={handleLogout}>
             <Icon name="logout" size={15} />
             <span>Cerrar sesión</span>

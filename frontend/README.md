@@ -1,22 +1,13 @@
-# Tutorías · Frontend
+# Tutorías — Frontend APP-04 y APP-05
 
-Frontend de la plataforma de tutorías académicas.
+Incluye el flujo local de tutorías para el frontend.
 
-## Acceso temporal de desarrollo
-
-Mientras el backend y la base de datos se integran, el acceso no consulta usuarios reales. El formulario permite continuar con cualquier correo y cualquier contraseña siempre que los campos requeridos estén completos.
-
-No se crean cuentas de prueba ni credenciales especiales. Solo se guarda una marca temporal de sesión en `sessionStorage` para proteger la ruta `/tutores` durante la navegación.
-
-Cuando se conecte el backend, este comportamiento deberá reemplazarse por la autenticación real del proyecto.
-
-## Lista de tutores
-
-- Lista de tutores
-- Filtro por materia
-- Búsqueda por nombre o materia
-- Diseño responsive
-- Consumo preparado para `GET /api/tutores/?materia=`
+- Registro con rol estudiante o tutor.
+- Tutores registrados guardados localmente y visibles para estudiantes.
+- APP-04: el tutor consulta únicamente las solicitudes dirigidas a su cuenta.
+- APP-05: el tutor abre una solicitud pendiente en una pantalla de gestión separada y puede aceptarla o rechazarla.
+- El estado actualizado queda guardado en localStorage.
+- Las rutas del tutor están protegidas por rol.
 
 ## Ejecutar
 
@@ -24,3 +15,5 @@ Cuando se conecte el backend, este comportamiento deberá reemplazarse por la au
 npm install
 npm run dev
 ```
+
+El backend no fue modificado.
