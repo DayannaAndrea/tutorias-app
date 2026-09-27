@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Tutor
+from .models import Usuario, Tutor, Solicitud
 
 class RegistroSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,3 +31,14 @@ class TutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tutor
         fields = ['id', 'nombre', 'materias']
+
+#serializer para las solicitudes de las monitorias
+class SolicitudSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Solicitud
+        fields = ['id', 'tutor', 'materia', 'fecha', 'hora', 'estado']
+        read_only_fields = ['id', 'estado']
+
+    def create(self, validated_data):
+        validated_data['estudiante'] = self.context['request'].user
+        return Solicitud.objects.create(**validated_data)

@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .serializers import RegistroSerializer, UsuarioSerializer, TutorSerializer
+from .serializers import RegistroSerializer, UsuarioSerializer, TutorSerializer, SolicitudSerializer
 from .models import Tutor
 
 class RegistroView(generics.CreateAPIView):
@@ -30,3 +30,9 @@ class TutoresView(generics.ListAPIView):
             )
 
         return queryset
+
+#serialicer para las solicitud de tutorias]
+
+class SolicitudView(generics.CreateAPIView):
+    serializer_class = SolicitudSerializer
+    permission_classes = [IsAuthenticated]
