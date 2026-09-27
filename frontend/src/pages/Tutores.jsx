@@ -29,15 +29,6 @@ function getAvailability(tutor) {
   return 'Disponible'
 }
 
-function initials(name) {
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase() || 'TU'
-}
 
 function Icon({ name, size = 18 }) {
   const paths = {
@@ -47,6 +38,8 @@ function Icon({ name, size = 18 }) {
     check: <path d="m5 12 4 4L19 6" />,
     arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
     grid: <><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></>,
+    user: <><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>,
+    graduation: <><path d="m3 9 9-5 9 5-9 5z" /><path d="M7 11v4.5c0 1.7 2.2 3.5 5 3.5s5-1.8 5-3.5V11" /><path d="M21 9v5" /></>,
     logout: <><path d="M10 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20H10" /><path d="M14 8l4 4-4 4" /><path d="M18 12H9" /></>,
     calendar: <><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M8 3v4M16 3v4M4 9h16" /></>,
   }
@@ -107,7 +100,7 @@ function Tutores() {
 
       <header className="tutors-header">
         <button className="tutors-brand tutors-brand-button" type="button" onClick={() => navigate('/tutores')} aria-label="Ir a tutores">
-          <span className="tutors-brand-mark">T</span>
+          <span className="tutors-brand-mark" aria-hidden="true"><Icon name="book" size={20} /></span>
           <span className="tutors-brand-copy">
             <strong>Tutorías</strong>
             <small>Acompañamiento académico</small>
@@ -115,15 +108,13 @@ function Tutores() {
         </button>
 
         <div className="tutors-header-actions">
-          <span className="student-role-chip">
-            <span className="student-role-dot" />
-            Estudiante
+          <button className="header-nav-button header-nav-button-active" type="button" onClick={() => navigate('/tutores')}>Tutores</button>
+          <button className="header-nav-button" type="button" onClick={() => navigate('/mis-solicitudes')}>Mis solicitudes</button>
+          <span className="student-role-chip"><span className="student-role-dot" />Estudiante</span>
+          <span className="header-user-profile">
+            <span className="header-user-avatar" aria-hidden="true"><Icon name="user" size={15} /></span>
+            <span className="header-user-name">{currentUser?.name || 'Usuario'}</span>
           </span>
-          <span className="academic-chip">
-            <span className="academic-chip-dot" />
-            Espacio académico
-          </span>
-          {currentUser?.name && <span className="header-user-name">{currentUser.name}</span>}
           <button className="header-logout-button" type="button" onClick={handleLogout}>
             <Icon name="logout" size={15} />
             <span>Cerrar sesión</span>
@@ -237,8 +228,8 @@ function Tutores() {
                 </div>
 
                 <div className="tutor-profile">
-                  <div className="tutor-avatar">
-                    <span>{initials(name)}</span>
+                  <div className="tutor-avatar" aria-hidden="true">
+                    <Icon name="graduation" size={25} />
                   </div>
                   <div className="tutor-profile-copy">
                     <h2>{name}</h2>
@@ -284,7 +275,7 @@ function Tutores() {
 
         <footer className="tutors-footer">
           <div className="footer-brand-mini">
-            <span className="footer-mark">T</span>
+            <span className="footer-mark" aria-hidden="true"><Icon name="book" size={17} /></span>
             <span>Tutorías</span>
           </div>
           <span className="footer-center-copy">Encuentra apoyo para tus materias</span>

@@ -19,9 +19,6 @@ function formatTime(value) {
   return new Intl.DateTimeFormat('es-CO', { hour: 'numeric', minute: '2-digit' }).format(date)
 }
 
-function initials(name) {
-  return name.split(' ').filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'ES'
-}
 
 function Icon({ name, size = 18 }) {
   const paths = {
@@ -29,6 +26,7 @@ function Icon({ name, size = 18 }) {
     calendar: <><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M8 3v4M16 3v4M4 9h16" /></>,
     clock: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3.5 2" /></>,
     book: <><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 1 4 17.5z" /><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5a2.5 2.5 0 0 0 2.5-2.5z" /></>,
+    user: <><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>,
     logout: <><path d="M10 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20H10" /><path d="M14 8l4 4-4 4" /><path d="M18 12H9" /></>,
     arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
   }
@@ -71,13 +69,17 @@ function SolicitudesRecibidas() {
       <div className="requests-background requests-background-two" aria-hidden="true" />
       <header className="requests-header">
         <button className="requests-brand" type="button" onClick={() => navigate('/solicitudes-recibidas')} aria-label="Ir al panel del tutor">
-          <span className="requests-brand-mark">T</span>
+          <span className="requests-brand-mark" aria-hidden="true"><Icon name="book" size={19} /></span>
           <span className="requests-brand-copy"><strong>Tutorías</strong><small>Acompañamiento académico</small></span>
         </button>
         <div className="requests-header-actions">
+          <button className="header-nav-button header-nav-button-active" type="button" onClick={() => navigate('/solicitudes-recibidas')}>Solicitudes</button>
           <span className="tutor-role-chip"><span className="tutor-role-dot" />Tutor</span>
-          {currentUser?.name && <span className="requests-user-name">{currentUser.name}</span>}
-          <button className="requests-logout" type="button" onClick={handleLogout}><Icon name="logout" size={15} /> Cerrar sesión</button>
+          <span className="header-user-profile header-user-profile-tutor">
+            <span className="header-user-avatar" aria-hidden="true"><Icon name="user" size={15} /></span>
+            <span className="header-user-name">{currentUser?.name || 'Usuario'}</span>
+          </span>
+          <button className="requests-logout" type="button" onClick={handleLogout}><Icon name="logout" size={15} /> <span>Cerrar sesión</span></button>
         </div>
       </header>
 
@@ -113,7 +115,7 @@ function SolicitudesRecibidas() {
         <section className="requests-list" aria-live="polite">
           {filtered.map((item, index) => (
             <article className={`request-item request-item-${index % 4}`} key={item.id}>
-              <div className="request-item-main"><div className="request-student-avatar">{initials(item.estudiante)}</div><div className="request-student-copy"><span className="request-item-kicker">Solicitud de tutoría</span><h2>{item.estudiante}</h2><p>{item.materia}</p></div></div>
+              <div className="request-item-main"><div className="request-student-avatar" aria-hidden="true"><Icon name="user" size={20} /></div><div className="request-student-copy"><span className="request-item-kicker">Solicitud de tutoría</span><h2>{item.estudiante}</h2><p>{item.materia}</p></div></div>
               <div className="request-meta-grid">
                 <div className="request-meta-cell"><span><Icon name="calendar" size={14} /> Fecha</span><strong>{formatDate(item.fecha)}</strong></div>
                 <div className="request-meta-cell"><span><Icon name="clock" size={14} /> Hora</span><strong>{formatTime(item.hora)}</strong></div>
@@ -136,7 +138,7 @@ function SolicitudesRecibidas() {
           </section>
         )}
 
-        <footer className="requests-footer"><span className="requests-footer-brand"><span>T</span>Tutorías</span><span>Consulta las solicitudes vinculadas a tu cuenta.</span></footer>
+        <footer className="requests-footer"><span className="requests-footer-brand"><span aria-hidden="true"><Icon name="book" size={15} /></span>Tutorías</span><span>Consulta las solicitudes vinculadas a tu cuenta.</span></footer>
       </section>
     </main>
   )

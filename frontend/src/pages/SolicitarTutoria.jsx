@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getCurrentUser } from '../services/auth.js'
+import { getCurrentUser, signOut } from '../services/auth.js'
 import { addRequest } from '../services/solicitudesService.js'
 
 import { getLocalTutores } from '../services/tutoresLocal.js'
@@ -27,6 +27,7 @@ function Icon({ name, size = 18 }) {
     check: <path d="m5 12 4 4L19 6" />,
     book: <><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 1 4 17.5z" /><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5a2.5 2.5 0 0 0 2.5-2.5z" /></>,
     user: <><circle cx="12" cy="8" r="3.1" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>,
+    logout: <><path d="M10 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20H10" /><path d="M14 8l4 4-4 4" /><path d="M18 12H9" /></>,
   }
 
   return (
@@ -36,9 +37,6 @@ function Icon({ name, size = 18 }) {
   )
 }
 
-function initials(name) {
-  return name.split(' ').filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'TU'
-}
 
 function getTodayString() {
   const d = new Date()
@@ -72,6 +70,11 @@ function SolicitarTutoria() {
     setMateria(nextSubjects[0] || 'Tutoría general')
   }
 
+  const handleLogout = () => {
+    signOut()
+    navigate('/login', { replace: true })
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault()
     setSubmitted(true)
@@ -97,7 +100,7 @@ function SolicitarTutoria() {
         <div className="request-bg request-bg-two" aria-hidden="true" />
         <header className="request-header">
           <button className="request-brand" type="button" onClick={() => navigate('/tutores')}>
-            <span className="request-brand-mark">T</span>
+            <span className="request-brand-mark" aria-hidden="true"><Icon name="book" size={19} /></span>
             <span><strong>Tutorías</strong><small>Acompañamiento académico</small></span>
           </button>
         </header>
@@ -119,8 +122,8 @@ function SolicitarTutoria() {
           </div>
 
           <div className="request-success-actions">
-            <button className="request-secondary-button" type="button" onClick={() => navigate('/tutores')}>
-              <Icon name="back" size={17} /> Volver a tutores
+            <button className="request-secondary-button" type="button" onClick={() => navigate('/mis-solicitudes')}>
+              Ver mis solicitudes <Icon name="arrow" size={17} />
             </button>
             <button className="request-primary-button" type="button" onClick={() => setSubmitted(false)}>
               Nueva solicitud <Icon name="arrow" size={17} />
@@ -138,17 +141,18 @@ function SolicitarTutoria() {
 
       <header className="request-header">
         <button className="request-brand" type="button" onClick={() => navigate('/tutores')}>
-          <span className="request-brand-mark">T</span>
+          <span className="request-brand-mark" aria-hidden="true"><Icon name="book" size={19} /></span>
           <span><strong>Tutorías</strong><small>Acompañamiento académico</small></span>
         </button>
         <div className="request-header-links">
-          <span className="student-role-chip">
-            <span className="student-role-dot" />
-            Estudiante
+          <button className="header-nav-button" type="button" onClick={() => navigate('/tutores')}>Tutores</button>
+          <button className="header-nav-button" type="button" onClick={() => navigate('/mis-solicitudes')}>Mis solicitudes</button>
+          <span className="student-role-chip"><span className="student-role-dot" />Estudiante</span>
+          <span className="header-user-profile">
+            <span className="header-user-avatar" aria-hidden="true"><Icon name="user" size={15} /></span>
+            <span className="header-user-name">{currentUser?.name || 'Usuario'}</span>
           </span>
-          <button className="request-back-link" type="button" onClick={() => navigate('/tutores')}>
-            <Icon name="back" size={15} /> Volver a tutores
-          </button>
+          <button className="header-logout-button" type="button" onClick={handleLogout}><Icon name="logout" size={15} /><span>Cerrar sesión</span></button>
         </div>
       </header>
 
@@ -203,14 +207,33 @@ function SolicitarTutoria() {
               <div className="request-field">
                 <label htmlFor="fecha"><Icon name="calendar" size={15} /> Fecha</label>
                 <div className="request-control">
-                  <input id="fecha" type="date" min={getTodayString()} value={fecha} onChange={(event) => setFecha(event.target.value)} required />
+                  <input
+                    id="fecha"
+                    className="date-time-input"
+                    type="date"
+                    min={getTodayString()}
+                    value={fecha}
+                    onChange={(event) => setFecha(event.target.value)}
+                    onClick={(event) => event.currentTarget.showPicker?.()}
+                    onFocus={(event) => event.currentTarget.showPicker?.()}
+                    required
+                  />
                 </div>
               </div>
 
               <div className="request-field">
                 <label htmlFor="hora"><Icon name="clock" size={15} /> Hora</label>
                 <div className="request-control">
-                  <input id="hora" type="time" value={hora} onChange={(event) => setHora(event.target.value)} required />
+                  <input
+                    id="hora"
+                    className="date-time-input"
+                    type="time"
+                    value={hora}
+                    onChange={(event) => setHora(event.target.value)}
+                    onClick={(event) => event.currentTarget.showPicker?.()}
+                    onFocus={(event) => event.currentTarget.showPicker?.()}
+                    required
+                  />
                 </div>
               </div>
 
