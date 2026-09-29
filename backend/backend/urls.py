@@ -19,7 +19,7 @@ from django.urls import path
 from core.views import RegistroView
 from django.contrib import admin
 from django.urls import path
-from core.views import RegistroView, MeView, TutoresView, SolicitudView, SolicitudesTutorView, GestionarSolicitudView
+from core.views import RegistroView, MeView, TutoresView, SolicitudView, SolicitudesTutorView, GestionarSolicitudView, MisSolicitudesView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
@@ -31,4 +31,5 @@ urlpatterns = [
     path('api/solicitudes/', SolicitudView.as_view(), name='solicitudes'),
     path('api/solicitudes/tutor/', SolicitudesTutorView.as_view(), name='solicitudes-tutor'),
     path('api/solicitudes/<int:pk>/', GestionarSolicitudView.as_view(), name='gestionar-solicitud'),
+    path('api/solicitudes/mias/', MisSolicitudesView.as_view(), name='mis-solicitudes'),
 ]
