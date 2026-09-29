@@ -45,3 +45,23 @@ img,
 svg {
   max-width: 100%;
 }
+
+/* Reset global para evitar franjas alrededor de la aplicación */
+html,
+body,
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  min-width: 320px;
+  min-height: 100% !important;
+}
+
+html {
+  background: #040713 !important;
+}
+
+body {
+  background: #040713 !important;
+  overflow-x: hidden;
+}

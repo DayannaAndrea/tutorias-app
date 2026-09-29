@@ -36,6 +36,16 @@ export function getRequestsForTutor(tutorId) {
   return readRequests().filter((request) => String(request.tutorId || '') === normalizedId)
 }
 
+
+export function getRequestsForStudent(studentEmail) {
+  const normalizedEmail = String(studentEmail || '').trim().toLowerCase()
+  if (!normalizedEmail) return []
+
+  return readRequests()
+    .filter((request) => String(request.estudianteEmail || '').trim().toLowerCase() === normalizedEmail)
+    .sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }))
+}
+
 export function addRequest(request) {
   const requests = readRequests()
   const nextRequest = {

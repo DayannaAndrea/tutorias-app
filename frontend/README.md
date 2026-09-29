@@ -17,3 +17,6 @@ npm run dev
 ```
 
 El backend no fue modificado.
+
+
+APP-06: panel del estudiante para consultar el estado de sus solicitudes. La versión actual usa localStorage hasta conectar la API.

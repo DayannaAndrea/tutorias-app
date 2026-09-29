@@ -12,6 +12,20 @@ function getStrength(password) {
   return score
 }
 
+function SmallIcon({ type, size = 15 }) {
+  const paths = type === 'user'
+    ? <><circle cx="12" cy="8" r="3.2" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></>
+    : type === 'student'
+      ? <><circle cx="12" cy="7.5" r="3" /><path d="M6 20c.6-3.3 2.5-5 6-5s5.4 1.7 6 5" /></>
+      : <><path d="m3 9 9-5 9 5-9 5z" /><path d="M7 11v4.2c0 1.7 2.2 3.4 5 3.4s5-1.7 5-3.4V11" /><path d="M21 9v5" /></>
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {paths}
+    </svg>
+  )
+}
+
 function Register() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
@@ -75,7 +89,7 @@ function Register() {
               role="radio"
               aria-checked={form.role === 'estudiante'}
             >
-              <span className="role-choice-icon">E</span>
+              <span className="role-choice-icon"><SmallIcon type="student" size={18} /></span>
               <span className="role-choice-copy">
                 <strong>Estudiante</strong>
                 <small>Buscar tutores y solicitar tutorías</small>
@@ -89,7 +103,7 @@ function Register() {
               role="radio"
               aria-checked={form.role === 'tutor'}
             >
-              <span className="role-choice-icon">T</span>
+              <span className="role-choice-icon"><SmallIcon type="tutor" size={18} /></span>
               <span className="role-choice-copy">
                 <strong>Tutor</strong>
                 <small>Recibir y gestionar solicitudes</small>
@@ -110,7 +124,7 @@ function Register() {
               onChange={handleChange}
               autoComplete="name"
             />
-            <span className="input-detail initials" aria-hidden="true">NM</span>
+            <span className="input-detail initials" aria-hidden="true"><SmallIcon type="user" size={15} /></span>
           </div>
         </div>
 

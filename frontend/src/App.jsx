@@ -5,6 +5,7 @@ import Tutores from './pages/Tutores.jsx'
 import SolicitudesRecibidas from './pages/SolicitudesRecibidas.jsx'
 import GestionarSolicitud from './pages/GestionarSolicitud.jsx'
 import SolicitarTutoria from './pages/SolicitarTutoria.jsx'
+import MisSolicitudes from './pages/MisSolicitudes.jsx'
 import { getCurrentRole, getHomePath, isAuthenticated } from './services/auth.js'
 import './App.css'
 
@@ -29,6 +30,14 @@ function App() {
         element={
           <ProtectedRoute role="estudiante">
             <Tutores />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/mis-solicitudes"
+        element={
+          <ProtectedRoute role="estudiante">
+            <MisSolicitudes />
           </ProtectedRoute>
         }
       />
