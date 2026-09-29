@@ -37,7 +37,14 @@ class SolicitudSerializer(serializers.ModelSerializer):
     class Meta:
         model = Solicitud
         fields = ['id', 'tutor', 'materia', 'fecha', 'hora', 'estado']
-        read_only_fields = ['id', 'estado']
+        read_only_fields = ['id']
+
+    def validate_estado(self, value):
+        if value is not None and value not in ['aceptada', 'rechazada']:
+            raise serializers.ValidationError(
+                'El estado debe ser aceptada o rechazada'
+            )
+        return value
 
     def create(self, validated_data):
         validated_data['estudiante'] = self.context['request'].user

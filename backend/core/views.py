@@ -46,4 +46,15 @@ class SolicitudesTutorView(generics.ListAPIView):
         return Solicitud.objects.filter(
             tutor__usuario=self.request.user
         ) 
+
+#vistas para aceptar y recahazar las solicitudes
+class GestionarSolicitudView(generics.UpdateAPIView):
+    serializer_class = SolicitudSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Solicitud.objects.filter(
+            tutor__usuario=self.request.user
+        )
+    
     
