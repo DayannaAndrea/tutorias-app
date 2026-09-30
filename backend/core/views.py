@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .serializers import RegistroSerializer, UsuarioSerializer, TutorSerializer, SolicitudSerializer
+from .serializers import RegistroSerializer, UsuarioSerializer, TutorSerializer, SolicitudSerializer, CalendarioSerializer
 from .models import Tutor, Solicitud
 
 class RegistroView(generics.CreateAPIView):
@@ -67,5 +67,23 @@ class MisSolicitudesView(generics.ListAPIView):
         return Solicitud.objects.filter(
             estudiante=self.request.user
         )
-    
-    
+
+
+#vista para el calendario
+class CalendarioView(generics.ListAPIView):
+    serializer_class = CalendarioSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        usuario = self.request.user
+
+        if usuario.rol == 'tutor':
+            return Solicitud.objects.filter(
+                tutor__usuario=usuario,
+                estado='aceptada'
+            )
+
+        return Solicitud.objects.filter(
+            estudiante=usuario,
+            estado='aceptada'
+        )

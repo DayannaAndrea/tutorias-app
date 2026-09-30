@@ -49,3 +49,13 @@ class SolicitudSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['estudiante'] = self.context['request'].user
         return Solicitud.objects.create(**validated_data)
+
+
+#serializer calendario
+class CalendarioSerializer(serializers.ModelSerializer):
+    tutor = serializers.CharField(source='tutor.usuario.username')
+    materia = serializers.CharField(source='materia.nombre')
+
+    class Meta:
+        model = Solicitud
+        fields = ['id', 'tutor', 'materia', 'fecha', 'hora', 'estado']
