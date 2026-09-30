@@ -23,6 +23,7 @@ function readRequests() {
 
 function writeRequests(requests) {
   localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests))
+  window.dispatchEvent(new Event('tutorias_solicitudes_updated'))
   return requests
 }
 

@@ -74,6 +74,7 @@ function SolicitudesRecibidas() {
         </button>
         <div className="requests-header-actions">
           <button className="header-nav-button header-nav-button-active" type="button" onClick={() => navigate('/solicitudes-recibidas')}>Solicitudes</button>
+          <button className="header-nav-button" type="button" onClick={() => navigate('/calendario')}>Calendario</button>
           <span className="tutor-role-chip"><span className="tutor-role-dot" />Tutor</span>
           <span className="header-user-profile header-user-profile-tutor">
             <span className="header-user-avatar" aria-hidden="true"><Icon name="user" size={15} /></span>
