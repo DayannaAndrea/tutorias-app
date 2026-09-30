@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .serializers import RegistroSerializer, UsuarioSerializer, TutorSerializer, SolicitudSerializer, CalendarioSerializer
-from .models import Tutor, Solicitud
+from .serializers import RegistroSerializer, UsuarioSerializer, TutorSerializer, SolicitudSerializer, CalendarioSerializer, NotificacionSerializer
+from .models import Tutor, Solicitud, Notificacion
 
 class RegistroView(generics.CreateAPIView):
     serializer_class = RegistroSerializer
@@ -87,3 +87,13 @@ class CalendarioView(generics.ListAPIView):
             estudiante=usuario,
             estado='aceptada'
         )
+
+#vista de notificacion
+class NotificacionesView(generics.ListAPIView):
+    serializer_class = NotificacionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Notificacion.objects.filter(
+            usuario=self.request.user
+        ).order_by('-fecha')

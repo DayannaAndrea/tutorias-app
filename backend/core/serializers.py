@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Tutor, Solicitud
+from .models import Usuario, Tutor, Solicitud, Notificacion
 
 class RegistroSerializer(serializers.ModelSerializer):
     class Meta:
@@ -59,3 +59,11 @@ class CalendarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Solicitud
         fields = ['id', 'tutor', 'materia', 'fecha', 'hora', 'estado']
+
+
+#serialier notificacion
+class NotificacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notificacion
+        fields = ['id', 'mensaje', 'leida', 'fecha']
+        read_only_fields = ['id', 'fecha']
