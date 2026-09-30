@@ -1,3 +1,5 @@
+import { addStatusNotification } from './notifications.js'
+
 const REQUESTS_KEY = 'tutorias_solicitudes'
 
 const INITIAL_REQUESTS = [
@@ -69,14 +71,17 @@ export function addRequest(request) {
 export function updateRequestStatus(id, estado) {
   if (!['Aceptada', 'Rechazada'].includes(estado)) return null
 
+  const previous = readRequests().find((request) => String(request.id) === String(id)) || null
+  if (!previous || previous.estado !== 'Pendiente') return previous
+
+  const updatedRequest = { ...previous, estado }
   const requests = readRequests().map((request) => (
-    String(request.id) === String(id) && request.estado === 'Pendiente'
-      ? { ...request, estado }
-      : request
+    String(request.id) === String(id) ? updatedRequest : request
   ))
 
   writeRequests(requests)
-  return requests.find((request) => String(request.id) === String(id)) || null
+  addStatusNotification({ request: updatedRequest, status: estado })
+  return updatedRequest
 }
 
 export function getRequestById(id) {
