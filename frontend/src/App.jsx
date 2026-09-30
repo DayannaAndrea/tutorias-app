@@ -6,8 +6,10 @@ import SolicitudesRecibidas from './pages/SolicitudesRecibidas.jsx'
 import GestionarSolicitud from './pages/GestionarSolicitud.jsx'
 import SolicitarTutoria from './pages/SolicitarTutoria.jsx'
 import MisSolicitudes from './pages/MisSolicitudes.jsx'
+import Calendario from './pages/Calendario.jsx'
 import { getCurrentRole, getHomePath, isAuthenticated } from './services/auth.js'
 import './App.css'
+import NotificationToast from './components/NotificationToast.jsx'
 
 function ProtectedRoute({ children, role }) {
   if (!isAuthenticated() || !getCurrentRole()) return <Navigate to="/login" replace />
@@ -16,7 +18,12 @@ function ProtectedRoute({ children, role }) {
     return <Navigate to={getHomePath()} replace />
   }
 
-  return children
+  return (
+    <>
+      <NotificationToast />
+      {children}
+    </>
+  )
 }
 
 function App() {
@@ -38,6 +45,14 @@ function App() {
         element={
           <ProtectedRoute role="estudiante">
             <MisSolicitudes />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/calendario"
+        element={
+          <ProtectedRoute>
+            <Calendario />
           </ProtectedRoute>
         }
       />

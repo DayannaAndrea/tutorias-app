@@ -98,6 +98,7 @@ function MisSolicitudes() {
         <div className="student-requests-header-actions">
           <button className="header-nav-button" type="button" onClick={() => navigate('/tutores')}>Tutores</button>
           <button className="header-nav-button header-nav-button-active" type="button" onClick={() => navigate('/mis-solicitudes')}>Mis solicitudes</button>
+          <button className="header-nav-button" type="button" onClick={() => navigate('/calendario')}>Calendario</button>
           <span className="student-role-chip"><span className="student-role-dot" />Estudiante</span>
           <span className="header-user-profile">
             <span className="header-user-avatar" aria-hidden="true"><Icon name="user" size={15} /></span>
